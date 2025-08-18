@@ -8,6 +8,7 @@ from typing import List, Dict
 import io
 
 from src import logging_conf
+from src import utils_file
 from src.dto.temperature_dto import TemperatureDto
 
 logger = logging_conf.config("air_temperature")
@@ -34,13 +35,7 @@ def download(url: str, dst_dir: pathlib.Path):
             logger.info(f"Saved to {file_path}")
 
 def parse_csv_from_file(file_path: pathlib.Path):
-    return parse_csv(read_file(file_path))
-
-def read_file(file_path: pathlib.Path) -> str:
-    """Read a semicolon-delimited CSV file into a list of row dicts."""
-    with open(file_path, newline="", encoding="utf-8") as f:
-        return f.read()
-
+    return parse_csv(utils_file.read_file(file_path))
 
 def parse_csv(input: str) -> List[Dict[str, str]]:
     """Read a semicolon-delimited CSV file into a list of row dicts."""
