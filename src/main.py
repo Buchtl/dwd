@@ -41,6 +41,6 @@ if __name__ == "__main__":
       os.makedirs(dst_dir.as_posix(), exist_ok=True)
       air_temperature.download(url=base_url, dst_dir=dst_dir)
     else:
-       records = air_temperature.parse_csv(src_dir)
+       records = air_temperature.parse_csv_from_file(src_dir)
        for r in records:
           print(r)

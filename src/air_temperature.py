@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import csv
 from typing import List, Dict
+import io
 
 from src import logging_conf
 from src.dto.temperature_dto import TemperatureDto
@@ -32,12 +33,19 @@ def download(url: str, dst_dir: pathlib.Path):
 
             logger.info(f"Saved to {file_path}")
 
+def parse_csv_from_file(file_path: pathlib.Path):
+    return parse_csv(read_file(file_path))
 
-def read_csv(file_path: pathlib.Path) -> List[Dict[str, str]]:
+def read_file(file_path: pathlib.Path) -> str:
     """Read a semicolon-delimited CSV file into a list of row dicts."""
-    with open(file_path, newline="", encoding="utf-8") as csvfile:
-        reader = csv.DictReader(csvfile, delimiter=";")
-        return list(reader)
+    with open(file_path, newline="", encoding="utf-8") as f:
+        return f.read()
+
+
+def parse_csv(input: str) -> List[Dict[str, str]]:
+    """Read a semicolon-delimited CSV file into a list of row dicts."""
+    reader = csv.DictReader(io.StringIO(input), delimiter=";")
+    return parse_rows(list(reader))
 
 
 def parse_rows(rows: List[Dict[str, str]]) -> List[TemperatureDto]:
@@ -55,9 +63,3 @@ def parse_rows(rows: List[Dict[str, str]]) -> List[TemperatureDto]:
         )
         dtos.append(dto)
     return dtos
-
-
-def parse_csv(file_path: pathlib.Path) -> List[TemperatureDto]:
-    """Convenience wrapper that reads + parses in one step."""
-    rows = read_csv(file_path)
-    return parse_rows(rows)
