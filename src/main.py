@@ -29,5 +29,5 @@ if __name__ == "__main__":
 
     os.makedirs(dst_dir.as_posix(), exist_ok=True)
 
-    air_temperature(url = base_url, dst_dir = dst_dir)
+    air_temperature.download(url = base_url, dst_dir = dst_dir)
 
