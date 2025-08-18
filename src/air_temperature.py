@@ -4,12 +4,13 @@ import pathlib
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import csv
-from typing import List
+from typing import List, Dict
 
 from src import logging_conf
 from src.dto.temperature_dto import TemperatureDto
 
 logger = logging_conf.config("air_temperature")
+
 
 def download(url: str, dst_dir: pathlib.Path):
     response = requests.get(url)
@@ -21,31 +22,42 @@ def download(url: str, dst_dir: pathlib.Path):
         if href.startswith("10minuten"):
             file_url = urljoin(url, href)
             file_path = os.path.join(dst_dir.as_posix(), href)
-    
+
             logger.info(f"Downloading {file_url} ...")
             with requests.get(file_url, stream=True) as r:
                 r.raise_for_status()
                 with open(file_path, "wb") as f:
                     for chunk in r.iter_content(chunk_size=8192):
                         f.write(chunk)
-    
+
             logger.info(f"Saved to {file_path}")
 
 
-def parse_csv(file_path: pathlib.Path) -> List[TemperatureDto]:
-    dtos = []
+def read_csv(file_path: pathlib.Path) -> List[Dict[str, str]]:
+    """Read a semicolon-delimited CSV file into a list of row dicts."""
     with open(file_path, newline="", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile, delimiter=";")
-        for row in reader:
-            # Skip trailing "eor" column if present
-            dto = TemperatureDto(
-                stations_id=int(row["STATIONS_ID"]),
-                mess_datum=int(row["MESS_DATUM"]),
-                qn=int(row["  QN"].strip()),          # note spaces in header!
-                pp_10=float(row["PP_10"]),
-                tt_10=float(row["TT_10"]),
-                rf_10=float(row["RF_10"]),
-                td_10=float(row["TD_10"]),
-            )
-            dtos.append(dto)
+        return list(reader)
+
+
+def parse_rows(rows: List[Dict[str, str]]) -> List[TemperatureDto]:
+    """Convert CSV row dicts into TemperatureDto objects."""
+    dtos = []
+    for row in rows:
+        dto = TemperatureDto(
+            stations_id=int(row["STATIONS_ID"]),
+            mess_datum=int(row["MESS_DATUM"]),
+            qn=int(row["  QN"].strip()),  # space in header
+            pp_10=float(row["PP_10"]),
+            tt_10=float(row["TT_10"]),
+            rf_10=float(row["RF_10"]),
+            td_10=float(row["TD_10"]),
+        )
+        dtos.append(dto)
     return dtos
+
+
+def parse_csv(file_path: pathlib.Path) -> List[TemperatureDto]:
+    """Convenience wrapper that reads + parses in one step."""
+    rows = read_csv(file_path)
+    return parse_rows(rows)
