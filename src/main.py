@@ -8,7 +8,7 @@ from src import air_temperature
 
 logger = logging_conf.config("plot_temperature")
 
-base_url = "https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/10_minutes/air_temperature/"
+base_url = "https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/10_minutes/air_temperature/historical/"
 
 
 if __name__ == "__main__":
