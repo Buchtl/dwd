@@ -2,8 +2,8 @@ import argparse
 import pathlib
 import os
 
-
 from src import logging_conf
+from src import air_temperature
 
 
 logger = logging_conf.config("plot_temperature")
@@ -29,4 +29,5 @@ if __name__ == "__main__":
 
     os.makedirs(dst_dir.as_posix(), exist_ok=True)
 
+    air_temperature(url = base_url, dst_dir = dst_dir)
 
