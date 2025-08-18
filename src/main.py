@@ -30,8 +30,7 @@ if __name__ == "__main__":
 
     dst_dir: pathlib.Path = pathlib.Path(args.dst_dir)
 
-    logger.info(f"hello {dst_dir}")
-
     if(args.download):
+      logger.info(f"Downloading files to {dst_dir}")
       os.makedirs(dst_dir.as_posix(), exist_ok=True)
       air_temperature.download(url=base_url, dst_dir=dst_dir)
