@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 -m src.main --root-dir blah
+python3 -m src.main --dst-dir ./downloads
