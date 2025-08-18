@@ -25,12 +25,22 @@ if __name__ == "__main__":
         action="store_true",
         help="Download files",
     )
+    parser.add_argument(
+        "--src-dir",
+        default="./tests/fixtures/produkt_zehn_min_tu_20200101_20241231_00191.txt",
+        help="Dir where to search for sensor",
+    )
 
     args = parser.parse_args()
 
     dst_dir: pathlib.Path = pathlib.Path(args.dst_dir)
+    src_dir: pathlib.Path = pathlib.Path(args.src_dir)
 
     if(args.download):
       logger.info(f"Downloading files to {dst_dir}")
       os.makedirs(dst_dir.as_posix(), exist_ok=True)
       air_temperature.download(url=base_url, dst_dir=dst_dir)
+    else:
+       records = air_temperature.parse_csv(src_dir.as_posix())
+       for r in records:
+          print(r)

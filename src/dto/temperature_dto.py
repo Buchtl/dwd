@@ -28,3 +28,10 @@ class TemperatureDto:
             "RF_10": self.rf_10,
             "TD_10": self.td_10,
         }
+
+    def __str__(self):
+        return f"TemperatureDto(STATIONS_ID={self.stations_id}, MESS_DATUM={self.mess_datum}, QN={self.qn}, PP_10={self.pp_10}, TT_10={self.tt_10}, RF_10={self.rf_10}, TD_10={self.td_10})"
+
+    # Optional: good for debugging in REPL/logs
+    def __repr__(self):
+        return self.__str__()
