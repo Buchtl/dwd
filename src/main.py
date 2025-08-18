@@ -20,6 +20,11 @@ if __name__ == "__main__":
         default="./data",
         help="Dir where to search for sensor",
     )
+    parser.add_argument(
+        "--download",
+        action="store_true",
+        help="Download files",
+    )
 
     args = parser.parse_args()
 
@@ -27,7 +32,6 @@ if __name__ == "__main__":
 
     logger.info(f"hello {dst_dir}")
 
-    os.makedirs(dst_dir.as_posix(), exist_ok=True)
-
-    air_temperature.download(url = base_url, dst_dir = dst_dir)
-
+    if(args.download):
+      os.makedirs(dst_dir.as_posix(), exist_ok=True)
+      air_temperature.download(url=base_url, dst_dir=dst_dir)
