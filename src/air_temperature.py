@@ -32,7 +32,7 @@ def download(url: str, dst_dir: pathlib.Path):
             logger.info(f"Saved to {file_path}")
 
 
-def parse_csv(file_path: str) -> List[TemperatureDto]:
+def parse_csv(file_path: pathlib.Path) -> List[TemperatureDto]:
     dtos = []
     with open(file_path, newline="", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile, delimiter=";")
