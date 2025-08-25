@@ -37,9 +37,9 @@ def download(url: str, dst_dir: pathlib.Path):
 def parse_csv_from_file(file_path: pathlib.Path):
     return parse_csv(utils_file.read_file(file_path))
 
-def parse_csv(input: str) -> List[Dict[str, str]]:
+def parse_csv(input_str: str) -> List[TemperatureDto]:
     """Read a semicolon-delimited CSV file into a list of row dicts."""
-    reader = csv.DictReader(io.StringIO(input), delimiter=";")
+    reader = csv.DictReader(io.StringIO(input_str), delimiter=";")
     return parse_rows(list(reader))
 
 
