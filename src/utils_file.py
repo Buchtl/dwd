@@ -8,9 +8,9 @@ def read_file(file_path: pathlib.Path) -> str:
     with open(file_path, newline="", encoding="utf-8") as f:
         return f.read()
 
-def read_zip_as_strings(input: pathlib.Path):
+def read_zip_as_strings(input_file: pathlib.Path):
     result: Dict[str, str] = {}
-    with zipfile.ZipFile(input, "r") as zf:
+    with zipfile.ZipFile(input_file, "r") as zf:
         for file_name in zf.namelist():
             if file_name.endswith("/"):
                 continue

@@ -4,12 +4,11 @@ import os
 
 from src import logging_conf
 from src import air_temperature
-
+from src import utils_file
 
 logger = logging_conf.config("plot_temperature")
 
 base_url = "https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/10_minutes/air_temperature/historical/"
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -36,11 +35,17 @@ if __name__ == "__main__":
     dst_dir: pathlib.Path = pathlib.Path(args.dst_dir)
     src_dir: pathlib.Path = pathlib.Path(args.src_dir)
 
-    if(args.download):
-      logger.info(f"Downloading files to {dst_dir}")
-      os.makedirs(dst_dir.as_posix(), exist_ok=True)
-      air_temperature.download(url=base_url, dst_dir=dst_dir)
+    if args.download:
+        logger.info(f"Downloading files to {dst_dir}")
+        os.makedirs(dst_dir.as_posix(), exist_ok=True)
+        air_temperature.download(url=base_url, dst_dir=dst_dir)
     else:
-       records = air_temperature.parse_csv_from_file(src_dir)
-       for r in records:
-          print(r)
+        logger.info(f"Parsing files from {src_dir}")
+        for file_path in src_dir.iterdir():
+            if file_path.is_file():
+                logger.debug(file_path.name)
+                file = utils_file.read_zip_as_strings(file_path)
+                logger.debug("##" + next(iter(file.values()))[:30] + "\n")
+        # records = air_temperature.parse_csv_from_file(src_dir)
+        # for r in records:
+        #    print(r)
