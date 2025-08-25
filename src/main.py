@@ -17,7 +17,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--dst-dir",
-        default="./data",
+        default=os.environ.get("DIR_DST") or "./data",
         help="Dir where to search for sensor",
     )
     parser.add_argument(
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--src-dir",
-        default="./tests/fixtures/produkt_zehn_min_tu_20200101_20241231_00191.txt",
+        default=os.environ.get("DIR_SRC") or "./tests/fixtures/produkt_zehn_min_tu_20200101_20241231_00191.txt",
         help="Dir where to search for sensor",
     )
 
