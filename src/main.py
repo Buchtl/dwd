@@ -73,10 +73,9 @@ if __name__ == "__main__":
                 logger.debug(file_path.name)
                 files_str = utils_file.read_zip_as_strings(file_path)
                 for file_str in files_str.values():
-                    logger.debug(file_str)
                     csv: list[TemperatureDto] = air_temperature.parse_csv(file_str)
-                    #for row in csv:
-                    #    logger.debug(row.stations_id)
+                    for row in csv:
+                        logger.debug(row.to_entity().messdatum)
         # records = air_temperature.parse_csv_from_file(src_dir)
         # for r in records:
         #    print(r)

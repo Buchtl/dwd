@@ -1,5 +1,5 @@
 import pytz
-import datetime
+from datetime import datetime
 
-def parse_date(value: str) -> datetime.datetime:
-    return pytz.UTC.localize(datetime.strptime(value, "%Y%m%d%H%M"))
+def parse_date(value: int) -> datetime:
+    return pytz.UTC.localize(datetime.strptime(str(value), "%Y%m%d%H%M"))
