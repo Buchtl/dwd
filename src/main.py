@@ -29,6 +29,31 @@ if __name__ == "__main__":
         default=os.environ.get("DIR_SRC") or "./tests/fixtures/produkt_zehn_min_tu_20200101_20241231_00191.txt",
         help="Dir where to search for sensor",
     )
+    parser.add_argument(
+        "--db-url",
+        default=os.environ.get("DB_URL") or "localhost",
+        help="db url",
+    )
+    parser.add_argument(
+        "--db-port",
+        default=os.environ.get("DB_PORT") or "5432",
+        help="db url",
+    )
+    parser.add_argument(
+        "--db-name",
+        default=os.environ.get("DB_NAME") or "dwd",
+        help="db name",
+    )
+    parser.add_argument(
+        "--db-user",
+        default=os.environ.get("DB_USER") or "dwd",
+        help="db username",
+    )
+    parser.add_argument(
+        "--db-pass",
+        default=os.environ.get("DB_PASS") or "dwd",
+        help="db password",
+    )
 
     args = parser.parse_args()
 
