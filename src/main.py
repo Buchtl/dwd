@@ -6,6 +6,8 @@ from src import logging_conf
 from src import air_temperature
 from src import utils_file
 
+from src.dto.temperature_dto import TemperatureDto
+
 logger = logging_conf.config("plot_temperature")
 
 base_url = "https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/10_minutes/air_temperature/historical/"
@@ -69,8 +71,12 @@ if __name__ == "__main__":
         for file_path in src_dir.iterdir():
             if file_path.is_file():
                 logger.debug(file_path.name)
-                file = utils_file.read_zip_as_strings(file_path)
-                logger.debug("##" + next(iter(file.values()))[:30] + "\n")
+                files_str = utils_file.read_zip_as_strings(file_path)
+                for file_str in files_str.values():
+                    logger.debug(file_str)
+                    csv: list[TemperatureDto] = air_temperature.parse_csv(file_str)
+                    #for row in csv:
+                    #    logger.debug(row.stations_id)
         # records = air_temperature.parse_csv_from_file(src_dir)
         # for r in records:
         #    print(r)
