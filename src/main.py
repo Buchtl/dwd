@@ -6,6 +6,7 @@ from src import logging_conf
 from src import air_temperature
 from src import utils_file
 
+from src.temperature_db_session import TemperatureDbSession
 from src.dto.temperature_dto import TemperatureDto
 
 logger = logging_conf.config("plot_temperature")
@@ -67,6 +68,7 @@ if __name__ == "__main__":
         os.makedirs(dst_dir.as_posix(), exist_ok=True)
         air_temperature.download(url=base_url, dst_dir=dst_dir)
     else:
+        db_session = TemperatureDbSession(db_url=args.db_url, db_port=args.db_port, db_name=args.db_name, db_user=args.db_user, db_pass=args.db_pass)
         logger.info(f"Parsing files from {src_dir}")
         for file_path in src_dir.iterdir():
             if file_path.is_file():
@@ -76,6 +78,3 @@ if __name__ == "__main__":
                     csv: list[TemperatureDto] = air_temperature.parse_csv(file_str)
                     for row in csv:
                         logger.debug(row.to_entity().messdatum)
-        # records = air_temperature.parse_csv_from_file(src_dir)
-        # for r in records:
-        #    print(r)
