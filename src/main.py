@@ -68,13 +68,16 @@ if __name__ == "__main__":
         os.makedirs(dst_dir.as_posix(), exist_ok=True)
         air_temperature.download(url=base_url, dst_dir=dst_dir)
     else:
-        db_session = TemperatureDbSession(db_url=args.db_url, db_port=args.db_port, db_name=args.db_name, db_user=args.db_user, db_pass=args.db_pass)
         logger.info(f"Parsing files from {src_dir}")
-        for file_path in src_dir.iterdir():
-            if file_path.is_file():
-                logger.debug(file_path.name)
-                files_str = utils_file.read_zip_as_strings(file_path)
-                for file_str in files_str.values():
-                    csv: list[TemperatureDto] = air_temperature.parse_csv(file_str)
-                    for row in csv:
-                        logger.debug(row.to_entity().messdatum)
+        db_session = TemperatureDbSession(db_url=args.db_url, db_port=args.db_port, db_name=args.db_name,
+                                          db_user=args.db_user, db_pass=args.db_pass)
+        with db_session as db:
+            for file_path in src_dir.iterdir():
+                if file_path.is_file():
+                    logger.debug(file_path.name)
+                    files_str = utils_file.read_zip_as_strings(file_path)
+                    for file_str in files_str.values():
+                        csv: list[TemperatureDto] = air_temperature.parse_csv(file_str)
+                        for row in csv:
+                            logger.debug(row.mess_datum)
+                            db.write(row.to_entity())
