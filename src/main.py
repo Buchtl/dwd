@@ -6,6 +6,9 @@ from src import logging_conf
 from src import air_temperature
 from src import utils_file
 
+from src.temperature_db_session import TemperatureDbSession
+from src.dto.temperature_dto import TemperatureDto
+
 logger = logging_conf.config("plot_temperature")
 
 base_url = "https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/10_minutes/air_temperature/historical/"
@@ -66,11 +69,15 @@ if __name__ == "__main__":
         air_temperature.download(url=base_url, dst_dir=dst_dir)
     else:
         logger.info(f"Parsing files from {src_dir}")
-        for file_path in src_dir.iterdir():
-            if file_path.is_file():
-                logger.debug(file_path.name)
-                file = utils_file.read_zip_as_strings(file_path)
-                logger.debug("##" + next(iter(file.values()))[:30] + "\n")
-        # records = air_temperature.parse_csv_from_file(src_dir)
-        # for r in records:
-        #    print(r)
+        db_session = TemperatureDbSession(db_url=args.db_url, db_port=args.db_port, db_name=args.db_name,
+                                          db_user=args.db_user, db_pass=args.db_pass)
+        with db_session as db:
+            for file_path in src_dir.iterdir():
+                if file_path.is_file():
+                    logger.debug(file_path.name)
+                    files_str = utils_file.read_zip_as_strings(file_path)
+                    for file_str in files_str.values():
+                        csv: list[TemperatureDto] = air_temperature.parse_csv(file_str)
+                        for row in csv:
+                            logger.debug(row.mess_datum)
+                            db.write(row.to_entity())
