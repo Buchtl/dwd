@@ -84,5 +84,9 @@ if __name__ == "__main__":
                             logger.debug(row.mess_datum)
                             try:
                                 db.write(row.to_entity())
-                            except (IntegrityError, PendingRollbackError):
+                            except IntegrityError:
                                 logger.info(f"Skipping duplicate row {row.mess_datum}")
+                                db.session.rollback()
+                            except PendingRollbackError:
+                                logger.info(f"Skipping duplicate row {row.mess_datum} because of PendingRollbackError")
+                                db.session.rollback()
