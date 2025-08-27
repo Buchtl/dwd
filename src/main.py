@@ -1,6 +1,8 @@
 import argparse
 import pathlib
 import os
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import PendingRollbackError
 
 from src import logging_conf
 from src import air_temperature
@@ -80,4 +82,7 @@ if __name__ == "__main__":
                         csv: list[TemperatureDto] = air_temperature.parse_csv(file_str)
                         for row in csv:
                             logger.debug(row.mess_datum)
-                            db.write(row.to_entity())
+                            try:
+                                db.write(row.to_entity())
+                            except (IntegrityError, PendingRollbackError):
+                                logger.info(f"Skipping duplicate row {row.mess_datum}")
