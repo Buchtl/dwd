@@ -34,6 +34,7 @@ class TemperatureDto:
 
     def to_entity(self):
         return TemperatureEntity(
+            id = self.stations_id * (10 ** 12) + self.mess_datum,
             stations_id=self.stations_id,
             mess_datum=time_utils.parse_date(self.mess_datum),
             qn=self.qn,
